@@ -8,12 +8,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                echo 'Downloading code'
-            }
-        }
-
         stage('Build') {
             steps {
                 bat 'mvn clean compile'
@@ -31,17 +25,18 @@ pipeline {
                 bat 'mvn package'
             }
         }
+
+        stage('Docker Build') {
+            steps {
+                bat 'docker build -t firstdemo-app .'
+            }
+        }
     }
 
     post {
-
         success {
-          archiveArtifacts artifacts: 'target/*.jar'
+            archiveArtifacts artifacts: 'target/*.jar'
             echo 'Build Successful'
-        }
-
-        failure {
-            echo 'Build Failed'
         }
     }
 }
